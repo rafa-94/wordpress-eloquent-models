@@ -181,9 +181,8 @@ class Post extends Model
      */
     public function taxonomies()
     {
-        global $wpdb;
         return $this->belongsToMany(
-            Taxonomy::class, $wpdb->prefix . 'term_relationships', 'object_id', 'term_taxonomy_id'
+            Taxonomy::class, $this->getConnection()->db->prefix . 'term_relationships', 'object_id', 'term_taxonomy_id'
         );
     }
 

@@ -26,9 +26,8 @@ class Menu extends Taxonomy
      */
     public function items()
     {
-        global $wpdb;
         return $this->belongsToMany(
-            MenuItem::class, $wpdb->prefix . 'term_relationships', 'term_taxonomy_id', 'object_id'
+            MenuItem::class, $this->getConnection()->db->prefix . 'term_relationships', 'term_taxonomy_id', 'object_id'
         )->orderBy('menu_order');
     }
 }

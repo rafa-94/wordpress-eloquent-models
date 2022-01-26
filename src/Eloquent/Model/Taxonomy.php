@@ -63,9 +63,8 @@ class Taxonomy extends Model
      */
     public function posts()
     {
-        global $wpdb;
         return $this->belongsToMany(
-            Post::class, $wpdb->prefix . 'term_relationships', 'term_taxonomy_id', 'object_id'
+            Post::class, $this->getConnection()->db->prefix . 'term_relationships', 'term_taxonomy_id', 'object_id'
         );
     }
 
