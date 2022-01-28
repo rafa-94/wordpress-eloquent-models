@@ -10,7 +10,7 @@ A biblioteca que oferece compatibilidade com o Eloquent, você pode consultar o 
 
 # Resumo
 
--   [Instalação](#instalacao)
+-   [Instalação](#instalação)
 -   [Estabelecimento](#estabelecimento)
 -   [Modelos suportados](#modelos-suportados)
     -   [Posts](#posts)
