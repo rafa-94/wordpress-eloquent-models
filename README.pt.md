@@ -10,27 +10,26 @@ A biblioteca que oferece compatibilidade com o Eloquent, você pode consultar o 
 
 # Resumo
 
--   [Instalação](#installation)
+-   [Instalação](#instalacao)
 -   [Estabelecimento](#estabelecimento)
--   [Modelos compatíveis](#modelos-compativeis)
+-   [Modelos suportados](#modelos-suportados)
     -   [Posts](#posts)
     -   [Comments](#comments)
     -   [Terms](#terms)
     -   [Users](#users)
     -   [Options](#options)
     -   [Menus](#menus)
--   [Imagens](#images)
+-   [Imagens](#imagens)
 -   [Alias de campos](#alias-de-campos)
 -   [Scopes personalizados](#scopes-personalizados)
--   [Paginação](#paginacao)
+-   [Paginação](#paginação)
 -   [Meta](#meta)
--   [Request de um campo personalizado de um Post (Meta)](#request-de-um-campo-personalizado-de-um-p-Post-Meta)
+-   [Request de um campo personalizado de um Post (Meta)](#request-de-um-campo-personalizado-de-um-post-meta)
 -   [Advanced Custom Fields](#advanced-custom-fields)
--   [Criação de tabela](#criacao-de-tabela)
--   [Consultas avançadas](#consultas-avancadas)
--   [Tipo de conteúdo personalizado](#tipo-de-conteudo-personalizado)
+-   [Criação de tabela](#criação-de-tabela)
+-   [Consultas avançadas](#consultas-avançadas)
 -   [Modelos personalizados](#modelos-personalizados)
-    -   [Definição do modelo Eloquent](#definicao-do-modelo-eloquent)
+    -   [Definição do modelo Eloquent](#definição-do-modelo-eloquent)
     -   [Consultas de modelo personalizado](#consultas-de-modelo-personalizado)
 -   [Shortcode](#shortcode)
 -   [Request logs](#request-logs)
@@ -52,7 +51,7 @@ AmphiBee\Eloquent\Database::instance();
 
 ## Modelos suportados
 
-### Post
+### Posts
 
 ```php
 
@@ -93,7 +92,7 @@ Por padrão, `Post` retorna o conjunto de tipos de conteúdo. Isso pode ser alte
 Post::type('page')->get();
 ```
 
-### Comentários
+### Comments
 
 ```php
 
@@ -117,7 +116,7 @@ Nesta release `Term` é acessível como um modelo, mas só é acessível atravé
 $post->terms()->where('taxonomy', 'country');
 ```
 
-### User
+### Users
 
 ```php
 

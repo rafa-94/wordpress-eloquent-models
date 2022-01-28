@@ -12,7 +12,7 @@ The library providing compatibility with Eloquent, you can consult the [ORM docu
 
 -   [Installation](#installation)
 -   [Establishment](#establishment)
--   [Supported models](#supported-model)
+-   [Supported models](#supported-models)
     -   [Posts](#posts)
     -   [Comments](#comments)
     -   [Terms](#terms)
@@ -28,8 +28,7 @@ The library providing compatibility with Eloquent, you can consult the [ORM docu
 -   [Advanced Custom Fields](#advanced-custom-fields)
 -   [Table creation](#table-creation)
 -   [Advanced queries](#advanced-queries)
--   [Custom content type](#custom-content-type)
--   [Custom Modules](#custom-modules)
+-   [Custom Models](#custom-models)
     -   [Defining the Eloquent model](#defining-the-eloquent-model)
     -   [Custom model queries](#custom-model-queries)
 -   [Shortcode](#shortcode)
@@ -200,7 +199,7 @@ To group menus by parent, you can use the method `->groupBy()` in collection `$m
 
 To learn more about the method `groupBy()`, [consult the Eloquent documentation](https://laravel.com/docs/5.4/collections#method-groupby).
 
-## Field aliases
+## Field alias
 
 The model `Post` support aliases, so if you inspect an object `Post` you can find aliases in the static table `$aliases` (such as `title` for `post_title` and `content` for `post_content`.
 
@@ -406,7 +405,7 @@ For example, to retrieve customers whose age is greater than 40:
 $users = Capsule::table('customers')->where('age', '>', 40)->get();
 ```
 
-## Custom templates
+## Custom Models
 
 ### Defining the Eloquent model
 
