@@ -43,14 +43,15 @@ class Page extends Post implements WpEloquentPost
     {
         # Compare with asked template value
         if ($template !== null) {
-            return $this->scopeHasMeta($query, '_wp_page_template', $template, $operator);
+            return is_array($template)
+                        ? $this->scopeHasMetaIn($query, '_wp_page_template', $template)
+                        : $this->scopeHasMeta($query, '_wp_page_template', $template, $operator);
         }
         
         # No template asked, Looking for pages with templates which are not 'default'
         return $this->scopeHasMeta($query, '_wp_page_template')
                     ->scopeHasMeta($query, '_wp_page_template', 'default', '!=');
     }
-    
     
     /**
      * Get the page template.

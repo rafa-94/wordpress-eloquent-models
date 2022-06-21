@@ -4,6 +4,7 @@ namespace AmphiBee\Eloquent\Model;
 
 use AmphiBee\Eloquent\Model;
 use AmphiBee\Eloquent\Connection;
+use Illuminate\Support\Collection;
 use AmphiBee\Eloquent\Concerns\Aliases;
 use Illuminate\Database\Eloquent\Builder;
 use AmphiBee\Eloquent\Concerns\MetaFields;
@@ -177,6 +178,9 @@ class Post extends Model implements WpEloquentPost
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     *
+     * @issue on php@8.0 //  Memory limit exceed
+     * @todo Fix this issue.
      */
     public function thumbnail_meta()
     {
@@ -287,18 +291,17 @@ class Post extends Model implements WpEloquentPost
     /**
      * Gets all the terms arranged taxonomy => terms[].
      *
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
-    public function getTermsAttribute()
+    public function getTermsAttribute(): Collection
     {
-        return $this->taxonomies->groupBy(function ($taxonomy) {
-            return $taxonomy->taxonomy == 'post_tag' ?
-                'tag' : $taxonomy->taxonomy;
-        })->map(function ($group) {
-            return $group->mapWithKeys(function ($item) {
-                return [$item->term->slug => $item->term->name];
-            });
-        })->toArray();
+        return $this->taxonomies
+                    ->groupBy(fn ($tx) => $tx->taxonomy === 'post_tag' ? 'tag' : $tx->taxonomy)
+                    ->map(
+                        fn ($group) => $group->mapWithKeys(
+                            fn ($item) => [$item->term->slug => $item->term->name]
+                        )
+                    );
     }
 
     /**
@@ -451,7 +454,7 @@ class Post extends Model implements WpEloquentPost
 
     /******************************************/
     /*                                        */
-    /*        WordPress related methods       */
+    /*             Post attributes            */
     /*                                        */
     /******************************************/
 
@@ -466,43 +469,47 @@ class Post extends Model implements WpEloquentPost
         return $this->getPermalink();
     }
 
-
     /**
      * Get the thumbnail model.
      *
-     * @return Attachement|null
+     * @return Attachment|null
      */
     public function getThumbnailAttribute()
     {
-        return $this->thumbnail_id
-                    ? Attachment::withoutGlobalScopes()->find($this->thumbnail_id)
+        return ($meta = $this->getThumbnailMeta())
+                    ? $meta->attachment
                     : null;
     }
-
 
     /**
      * Get the thumbnail id.
      *
      * @return int|null
+     * @todo Fix php 8.0 memory issue on thumbnail_meta relationship.
      */
     public function getThumbnailIdAttribute(): ?int
     {
-        if (!$this->thumbnail_meta) {
-            return 0;
-        }
-        return ((int) $this->thumbnail_meta->meta_value) ?: 0;
+        return (int) ($meta = $this->getThumbnailMeta())
+                        ? $meta->meta_value
+                        : 0;
+        
+        // if (!$this->thumbnail_meta) {
+        //     return 0;
+        // }
+        // return ((int) $this->thumbnail_meta->meta_value) ?: 0;
     }
     
-
     /**
-     * Get the thumbnail alt.
-     * If null, returns the post title instead.
+     * Get the post thumbnail alt or the post title if not set.
+     * If the post has no thubnail, return empty string.
      *
      * @return string
      */
     public function getThumbnailAltAttribute(): string
     {
-        return ($this->thumbnail->alt ?: $this->title) ?: '';
+        return ($thumb = $this->thumbnail)
+                    ? ($thumb->alt ?: $this->title)
+                    : '';
     }
 
 
@@ -515,7 +522,7 @@ class Post extends Model implements WpEloquentPost
 
 
     /**
-     * Get the post edition link in back-office
+     * Get the post edition link in back-office.
      *
      * @return string
      */
@@ -525,7 +532,7 @@ class Post extends Model implements WpEloquentPost
     }
 
     /**
-     * Get the post edition link in back-office
+     * Get the post edition link in back-office.
      *
      * @return string
      */
@@ -535,14 +542,27 @@ class Post extends Model implements WpEloquentPost
     }
 
     /**
-     * Get the post permalink
+     * Get the post permalink.
      *
-     * @param bool $leavename (Optional) Whether to keep post name or page name. Default value: false
+     * @param bool $leavename (Optional) Whether to keep post name or page name. Default value: false.
      *
      * @return string|false
      */
     public function getPermalink(bool $leavename = false)
     {
         return get_permalink($this->id, $leavename);
+    }
+    
+    /**
+     * Get the ThumbnailMeta associated with this post.
+     *
+     * @return ThumbnailMeta|null
+     */
+    public function getThumbnailMeta()
+    {
+        return ThumbnailMeta::query()
+                    ->where('post_id', $this->id)
+                    ->where('meta_key', '_thumbnail_id')
+                    ->first();
     }
 }

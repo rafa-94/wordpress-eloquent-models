@@ -110,6 +110,22 @@ trait MetaFields
 
     /**
      * @param Builder $query
+     * @param string $key
+     * @param array $value
+     * @return Builder
+     */
+    public function scopeHasMetaIn(Builder $query, string $key, array $value)
+    {
+        $query->whereHas('meta', function (Builder $query) use ($key, $value) {
+            return $query->where('meta_key', '=', $key)
+                        ->whereIn('meta_value', $value);
+        });
+
+        return $query;
+    }
+
+    /**
+     * @param Builder $query
      * @param string $meta
      * @param mixed $value
      * @return Builder
