@@ -4,6 +4,7 @@ namespace AmphiBee\Eloquent\Model;
 
 use AmphiBee\Eloquent\Model;
 use AmphiBee\Eloquent\Connection;
+use Illuminate\Support\Collection;
 use AmphiBee\Eloquent\Concerns\Aliases;
 use Illuminate\Database\Eloquent\Builder;
 use AmphiBee\Eloquent\Concerns\MetaFields;
@@ -290,18 +291,17 @@ class Post extends Model implements WpEloquentPost
     /**
      * Gets all the terms arranged taxonomy => terms[].
      *
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
-    public function getTermsAttribute()
+    public function getTermsAttribute(): Collection
     {
-        return $this->taxonomies->groupBy(function ($taxonomy) {
-            return $taxonomy->taxonomy == 'post_tag' ?
-                'tag' : $taxonomy->taxonomy;
-        })->map(function ($group) {
-            return $group->mapWithKeys(function ($item) {
-                return [$item->term->slug => $item->term->name];
-            });
-        })->toArray();
+        return $this->taxonomies
+                    ->groupBy(fn ($tx) => $tx->taxonomy === 'post_tag' ? 'tag' : $tx->taxonomy)
+                    ->map(
+                        fn ($group) => $group->mapWithKeys(
+                            fn ($item) => [$item->term->slug => $item->term->name]
+                        )
+                    );
     }
 
     /**
