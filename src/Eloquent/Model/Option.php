@@ -49,7 +49,7 @@ class Option extends Model
     public function getValueAttribute()
     {
         try {
-            $value = unserialize($this->option_value);
+            $value = @unserialize($this->option_value);
 
             return $value === false && $this->option_value !== false ?
                 $this->option_value :
