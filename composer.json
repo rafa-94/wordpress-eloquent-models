@@ -9,7 +9,7 @@
         "illuminate/filesystem": "^7.0|^8.0",
         "illuminate/support": "^7.0|^8.0",
         "thunderer/shortcode": "^0.7.3",
-        "bordoni/phpass": "dev-main"
+        "bordoni/phpass": "^0.3.5"
     },
     "license": "GPL-2.0-or-later",
     "authors": [
