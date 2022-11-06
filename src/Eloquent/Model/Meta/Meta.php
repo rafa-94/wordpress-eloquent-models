@@ -37,11 +37,13 @@ abstract class Meta extends Model
     public function getValueAttribute()
     {
         try {
-            $value = unserialize($this->meta_value);
+            $value = @unserialize($this->meta_value); # prevent notice sent when not serialized string
 
-            return $value === false && $this->meta_value !== false ?
-                $this->meta_value :
-                $value;
+            return $value === false && $this->meta_value !== false && $this->meta_value !== 'b:0;'
+                ? $this->meta_value
+                : $value;
+
+            # catch an error
         } catch (Exception $ex) {
             return $this->meta_value;
         }

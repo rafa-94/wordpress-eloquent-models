@@ -49,11 +49,13 @@ class Option extends Model
     public function getValueAttribute()
     {
         try {
-            $value = unserialize($this->option_value);
+            $value = @unserialize($this->option_value); # prevent notice sent when not serialized string
 
-            return $value === false && $this->option_value !== false ?
-                $this->option_value :
-                $value;
+            return $value === false && $this->option_value !== false && $this->meta_value !== 'b:0;'
+                ? $this->option_value
+                : $value;
+
+            # catch an error
         } catch (Exception $ex) {
             return $this->option_value;
         }
