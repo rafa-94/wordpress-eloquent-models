@@ -431,31 +431,7 @@ class Post extends Model implements WpEloquentPost
 
 
     /******************************************/
-    /*                                        */
-    /*            Eloquent scopes             */
-    /*                                        */
-    /******************************************/
-
-
-    /**
-     * Get a collection of posts from their ids, keeping the given ids ordering.
-     *
-     * Eg: Post::ids([10,12,11])->get()
-     *
-     * @param Builder $query
-     * @param array   $ids
-     */
-    public function scopeIds(Builder $query, array $ids)
-    {
-        return $query->whereIn('ID', $ids)
-                    ->orderByRaw(sprintf('FIELD(ID, %s)', implode(',', $ids)));
-    }
-
-
-    /******************************************/
-    /*                                        */
     /*             Post attributes            */
-    /*                                        */
     /******************************************/
 
 
@@ -492,11 +468,6 @@ class Post extends Model implements WpEloquentPost
         return (int) ($meta = $this->getThumbnailMeta())
                         ? $meta->meta_value
                         : 0;
-        
-        // if (!$this->thumbnail_meta) {
-        //     return 0;
-        // }
-        // return ((int) $this->thumbnail_meta->meta_value) ?: 0;
     }
     
     /**
@@ -514,9 +485,7 @@ class Post extends Model implements WpEloquentPost
 
 
     /******************************************/
-    /*                                        */
     /*        WordPress methods aliases       */
-    /*                                        */
     /******************************************/
 
 

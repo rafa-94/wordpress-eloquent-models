@@ -139,4 +139,27 @@ class PostBuilder extends Builder
                 ->orderByRaw('LENGTH(meta_ordering)', 'ASC') # alphanum support, avoid this kind of sort : 1, 10, 11, 7, 8
                 ->orderBy('meta_ordering', $order);
     }
+
+    /**
+     * Filter the query to include the given post ids, in the given order.
+     * 
+     * @param array   $ids
+     */
+    public function whereIds(array $ids)
+    {
+        return empty($ids)
+                ? $this
+                : $this->whereIn('ID', $ids)
+                    ->orderByRaw(sprintf('FIELD(ID, %s)', implode(',', $ids)));
+    }
+    
+    /**
+     * Filter the query to include the given post ids, in the given order.
+     * 
+     * @deprecated Use whereIds() instead.
+     */
+    public function ids(array $ids)
+    {
+        return $this->whereIds($ids);
+    }
 }
