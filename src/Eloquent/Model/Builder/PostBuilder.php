@@ -148,7 +148,7 @@ class PostBuilder extends Builder
     public function whereIds(array $ids)
     {
         return empty($ids)
-                ? $this
+                ? $this->whereIn('ID', [])
                 : $this->whereIn('ID', $ids)
                     ->orderByRaw(sprintf('FIELD(ID, %s)', implode(',', $ids)));
     }
