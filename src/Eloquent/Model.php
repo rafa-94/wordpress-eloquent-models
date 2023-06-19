@@ -14,7 +14,6 @@ use Illuminate\Support\Str;
  */
 abstract class Model extends Eloquent
 {
-
     /**
      * Model constructor.
      *
@@ -46,14 +45,9 @@ abstract class Model extends Eloquent
      */
     public function getTable()
     {
+        $table = $this->table ?: str_replace('\\', '', Str::snake(Str::plural(class_basename($this))));
 
-        if (!empty($this->table)) {
-            $table = $this->table;
-        } else {
-            $table = str_replace('\\', '', snake_case(str_plural(class_basename($this))));
-        }
-
-        return $this->getConnection()->db->prefix . $table;
+        return $this->getConnection()->prefixTable($table);
     }
 
     /**
@@ -63,11 +57,12 @@ abstract class Model extends Eloquent
      */
     protected function newBaseQueryBuilder()
     {
-
         $connection = $this->getConnection();
 
         return new Builder(
-            $connection, $connection->getQueryGrammar(), $connection->getPostProcessor()
+            $connection,
+            $connection->getQueryGrammar(),
+            $connection->getPostProcessor()
         );
     }
 
@@ -84,9 +79,12 @@ abstract class Model extends Eloquent
     {
         $relationship = $this->{Str::plural(Str::camel($childType))}();
 
-        if ($relationship instanceof HasManyThrough ||
-            $relationship instanceof BelongsToMany) {
-            return $relationship->where($relationship->getRelated()->getTable() . '.' . $field, $value)->first();
+        if ($relationship instanceof HasManyThrough || $relationship instanceof BelongsToMany) {
+            $table = $this->getConnection()->prefixTable(
+                $relationship->getRelated()->getTable()
+            );
+
+            return $relationship->where($table . '.' . $field, $value)->first();
         } else {
             return $relationship->where($field, $value)->first();
         }
